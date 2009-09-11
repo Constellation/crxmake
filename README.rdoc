@@ -1,4 +1,4 @@
-= Ruby/CMigemo
+= crxmake
 
 * http://github.com/Constellation/crxmake
 
