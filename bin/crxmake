@@ -1,0 +1,68 @@
+#!/usr/bin/ruby
+# vim: fileencoding=utf-8
+require 'rubygems'
+require 'optparse'
+require 'crxmake'
+
+data = {}
+usage = <<-EOS
+option not valid
+
+[usage]
+  required opt
+   --pack-extension=<extension dir>
+     extension source directory
+
+  optional opt
+   --extension-output=<extension output path>
+     crx output path (default: ./<extension dirname>.crx)
+   --pack-extension-key=<pem path>
+     pem key path
+   --key-output=<key path>
+     pem key output path if you generate key (default: ./<extension
+  dirname>.pem)
+  --ignore-file=<pattern>
+    pattern to ignore files
+    pattern is compiled by Regexp.new(<pattern>)
+  --ignore-dir=<pattern>
+    pattern to ignore directories
+    pattern is compiled by Regexp.new(<pattern>)
+    EOS
+
+OptionParser.new('Packaging Chromium Extension') do |opt|
+  opt.version = '2'
+  opt.on('--pack-extension DIR') do |val|
+    data[:ex_dir] = val
+  end
+  opt.on('--pack-extension-key KEY') do |key|
+    data[:pkey] = key
+  end
+  opt.on('--key-output OKEY') do |okey|
+    data[:pkey_output] = okey
+  end
+  opt.on('--extension-output CRX') do |crx|
+    data[:crx_output] = crx
+  end
+  opt.on('--ignore-file FILE') do |file|
+    data[:ignorefile] = Regexp.new file
+  end
+  opt.on('--ignore-dir DIR') do |dir|
+    data[:ignoredir] = Regexp.new dir
+  end
+  opt.on('-v', '--verbose') do
+    data[:verbose] = true
+  end
+  begin
+    opt.parse!(ARGV)
+  rescue
+    puts usage
+   end
+end
+
+begin
+  CrxMake.make(data)
+rescue => e
+  puts e.message
+  puts usage
+end
+
