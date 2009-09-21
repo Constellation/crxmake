@@ -6,6 +6,7 @@ require 'openssl'
 require 'digest/sha1'
 require 'fileutils'
 require 'find'
+require 'pathname'
 
 class CrxMake < Object
   VERSION = '1.0.0'
@@ -121,14 +122,9 @@ zip file at #{@zip}
   end
 
   def get_relative base, target
-    if base == target
-      return '.'
-    end
-    if base[base.size - 1] != ?/
-      base += '/'
-    end
-    target.sub(Regexp.escape(base), '')
+    Pathname.new(target.to_s).relative_path_from(Pathname.new(base.to_s)).to_s
   end
+
 
   def sign_zip
     puts "sign zip" if @verbose
