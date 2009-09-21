@@ -9,7 +9,7 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '1.0.0'
+  VERSION = '1.0.1'
   @@magic = [?C, ?r, ?2, ?4].pack('C*')
   # this is chromium extension version
   @@version = [2].pack('L')
@@ -69,14 +69,14 @@ class CrxMake < Object
     end
     @crx_dir = File.dirname(@crx)
     puts <<-EOS if @verbose
-crx output dir: #{@crxdir}
-ext dir: #{@exdir}
+crx output dir: \"#{@crx}\"
+ext dir: \"#{@exdir}\"
     EOS
     @zip = File.join(@crx_dir, 'extension.zip')
   end
 
   def read_key
-    puts "read pemkey, \"#{@pkey}\"" if @verbose
+    puts "read pemkey: \"#{@pkey}\"" if @verbose
     File.open(@pkey, 'rb') do |io|
       @key = OpenSSL::PKey::RSA.new(io)
     end
@@ -117,7 +117,7 @@ ext dir: #{@exdir}
     end
     puts <<-EOS if @verbose
 create zip...done
-zip file at #{@zip}
+zip file at \"#{@zip}\"
     EOS
   end
 
@@ -149,7 +149,7 @@ zip file at #{@zip}
         file << zip.read
       end
     end
-    puts "done" if @verbose
+    puts "done at \"#{@crx}\"" if @verbose
   end
 
   def key_data
