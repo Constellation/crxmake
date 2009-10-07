@@ -9,14 +9,13 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '1.0.1'
+  VERSION = '1.0.2'
   @@magic = [?C, ?r, ?2, ?4].pack('C*')
   # this is chromium extension version
   @@version = [2].pack('L')
 
   # CERT_PUBLIC_KEY_INFO struct
-  @@key_algo = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00 30 81 89 02 81 81).map{|s| s.hex}.pack('C*')
-  @@key_foot = %w(02 03 01 00 01).map{|s| s.hex}.pack('C*')
+  @@key_algo = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00).map{|s| s.hex}.pack('C*')
   @@key_size = 1024
   def initialize opt
     check_valid_option(opt)
@@ -125,7 +124,6 @@ zip file at \"#{@zip}\"
     Pathname.new(target.to_s).relative_path_from(Pathname.new(base.to_s)).to_s
   end
 
-
   def sign_zip
     puts "sign zip" if @verbose
     plain = nil
@@ -137,7 +135,7 @@ zip file at \"#{@zip}\"
 
   def write_crx
     print "write crx..." if @verbose
-    key = @@key_algo + key_data + @@key_foot
+    key = @@key_algo+@key.public_key.to_der
     File.open(@crx, 'wb') do |file|
       file << @@magic
       file << @@version
@@ -150,24 +148,6 @@ zip file at \"#{@zip}\"
       end
     end
     puts "done at \"#{@crx}\"" if @verbose
-  end
-
-  def key_data
-    pubkey = @key.public_key
-    memo = pubkey.to_text.split(/\r|\n|\n\r/).inject({:flag => false, :data => []}){|memo, line|
-      if memo[:flag]
-        if line =~ /^\s+/
-          memo[:data].push(*line.strip.split(':'))
-        else
-          memo[:flag] = false
-        end
-      elsif /^Modulus/ =~ line
-        memo[:flag] = true
-      end
-      memo
-    }
-    data = memo[:data].map{|s| s.hex}.pack('C*')
-    return data
   end
 
   def to_sizet num
