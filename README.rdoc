@@ -47,8 +47,8 @@ command line
 
 == INSTALL:
 
-  gem source -a http://gems.github.com
-  sudo gem install Constellation-crxmake
+  gem source -a http://gemcutter.org
+  sudo gem install crxmake
 
 == LICENSE:
 
