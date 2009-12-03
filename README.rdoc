@@ -20,7 +20,7 @@ ruby code
   )
 
   # create zip for Google Extension Gallery
-  CrxMake.make(
+  CrxMake.zip(
     :ex_dir => "./src",
     :pkey   => "./test.pem",
     :zip_output => "./package/test.zip",
