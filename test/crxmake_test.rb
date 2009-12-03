@@ -6,8 +6,9 @@ require 'open-uri'
 
 class CrxMakeTest < Test::Unit::TestCase
   def setup
-    @dir = File.expand_path('tmp')
+    @dir = File.expand_path(@method_name)
     FileUtils.mkdir @dir
+    puts @dir
     # chromefullfeed compile
     open("http://chromefullfeed.googlecode.com/files/package.tar") do |file|
       File.open(File.join(@dir, 'package.tar'), 'wb') do |f|
@@ -22,14 +23,36 @@ class CrxMakeTest < Test::Unit::TestCase
   def test_create_crx
     CrxMake.make(
       :ex_dir => File.join(@dir, 'src'),
-      :pkey_output => File.join(@dir, 'test.pem'),
-      :crx_output => File.join(@dir, 'test.crx'),
+      :pkey_output => File.join(@dir, 'test_crx.pem'),
+      :crx_output => File.join(@dir, 'test_crx.crx'),
       :verbose => true,
       :ignorefile => /\.swp$/,
       :ignoredir => /^\.(?:svn|git|cvs)$/
     )
-    assert(File.exist?(File.join(@dir, 'test.crx')))
-    assert(File.exist?(File.join(@dir, 'test.pem')))
+    assert(File.exist?(File.join(@dir, 'test_crx.crx')))
+    assert(File.exist?(File.join(@dir, 'test_crx.pem')))
+  end
+  def test_create_zip
+    CrxMake.zip(
+      :ex_dir => File.join(@dir, 'src'),
+      :pkey_output => File.join(@dir, 'test_zip.pem'),
+      :zip_output => File.join(@dir, 'test_zip.zip'),
+      :verbose => true,
+      :ignorefile => /\.swp$/,
+      :ignoredir => /^\.(?:svn|git|cvs)$/
+    )
+    assert(File.exist?(File.join(@dir, 'test_zip.zip')))
+    assert(File.exist?(File.join(@dir, 'test_zip.pem')))
+  end
+  def test_create_crx_command
+    system("bin/crxmake --pack-extension='#{File.join(@dir, 'src')}' --extension-output='#{File.join(@dir, 'test_crx.crx')}' --key-output='#{File.join(@dir, 'test_crx.pem')}' --verbose")
+    assert(File.exist?(File.join(@dir, 'test_crx.crx')))
+    assert(File.exist?(File.join(@dir, 'test_crx.pem')))
+  end
+  def test_create_zip_command
+    system("bin/crxmake --pack-extension='#{File.join(@dir, 'src')}' --zip-output='#{File.join(@dir, 'test_zip.zip')}' --key-output='#{File.join(@dir, 'test_zip.pem')}' --verbose")
+    assert(File.exist?(File.join(@dir, 'test_zip.zip')))
+    assert(File.exist?(File.join(@dir, 'test_zip.pem')))
   end
 end
 

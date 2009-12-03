@@ -6,11 +6,8 @@ require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
-require 'rake/contrib/rubyforgepublisher'
 require 'rake/contrib/sshpublisher'
-require 'fileutils'
 require 'lib/crxmake'
-include FileUtils
 
 $version = CrxMake::VERSION
 $readme = 'README.rdoc'
@@ -78,14 +75,9 @@ task :gemspec do
   end
 end
 
-desc "gem build"
-task :build => [:gemspec] do
-  sh "gem build #{$name}.gemspec"
-end
-
 desc "gem install"
-task :install => [:build] do
-  sh "sudo gem install #{$name}-#{$version}.gem --local"
+task :install => [:gem] do
+  sh "sudo gem install pkg/#{$name}-#{$version}.gem --local"
 end
 
 desc "gem uninstall"

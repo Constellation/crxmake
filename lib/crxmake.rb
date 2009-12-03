@@ -9,7 +9,7 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '1.0.2'
+  VERSION = '2.0.0'
   @@magic = [?C, ?r, ?2, ?4].pack('C*')
   # this is chromium extension version
   @@version = [2].pack('L')
@@ -17,8 +17,13 @@ class CrxMake < Object
   # CERT_PUBLIC_KEY_INFO struct
   @@key_algo = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00).map{|s| s.hex}.pack('C*')
   @@key_size = 1024
+
   def initialize opt
-    check_valid_option(opt)
+    @opt = opt
+  end
+
+  def make
+    check_valid_option @opt
     if @pkey
       read_key
     else
@@ -29,6 +34,18 @@ class CrxMake < Object
     write_crx
   ensure
     final
+  end
+
+  def zip
+    check_valid_option_zip @opt
+    unless @pkey
+      generate_key
+      @pkey = @pkey_o
+    end
+    create_zip do |zip|
+      puts "include pem key: \"#{@pkey}\"" if @verbose
+      zip.add_file('key.pem', @pkey)
+    end
   end
 
   private
@@ -66,12 +83,51 @@ class CrxMake < Object
         break unless File.directory?(@crx)
       end
     end
-    @crx_dir = File.dirname(@crx)
     puts <<-EOS if @verbose
 crx output dir: \"#{@crx}\"
 ext dir: \"#{@exdir}\"
     EOS
-    @zip = File.join(@crx_dir, 'extension.zip')
+    @zip = File.join(File.dirname(@crx), 'extension.zip')
+  end
+
+  def check_valid_option_zip o
+    @exdir, @pkey, @pkey_o, @zip, @verbose, @ignorefile, @ignoredir = o[:ex_dir], o[:pkey], o[:pkey_output], o[:zip_output], o[:verbose], o[:ignorefile], o[:ignoredir]
+    @exdir = File.expand_path(@exdir) if @exdir
+    raise "extension dir not exist" if !@exdir || !File.exist?(@exdir) || !File.directory?(@exdir)
+    @pkey = File.expand_path(@pkey) if @pkey
+    raise "private key not exist" if @pkey && (!File.exist?(@pkey) || !File.file?(@pkey))
+    if @pkey_o
+      @pkey_o = File.expand_path(@pkey_o)
+      raise "private key output path is directory" if File.directory?(@pkey_o)
+    else
+      count = 0
+      loop do
+        if count.zero?
+          @pkey_o = File.expand_path("./#{File.basename(@exdir)}.pem")
+        else
+          @pkey_o = File.expand_path("./#{File.basename(@exdir)}-#{count+=1}.pem")
+        end
+        break unless File.directory?(@pkey_o)
+      end
+    end
+    if @zip
+      @zip = File.expand_path(@zip)
+      raise "crx path is directory" if File.directory?(@zip)
+    else
+      count = 0
+      loop do
+        if count.zero?
+          @zip = File.expand_path("./#{File.basename(@exdir)}.zip")
+        else
+          @zip = File.expand_path("./#{File.basename(@exdir)}-#{count+=1}.zip")
+        end
+        break unless File.directory?(@zip)
+      end
+    end
+    puts <<-EOS if @verbose
+zip output dir: \"#{@zip}\"
+ext dir: \"#{@exdir}\"
+    EOS
   end
 
   def read_key
@@ -113,6 +169,7 @@ ext dir: \"#{@exdir}\"
           end
         end
       end
+      yield zip if block_given?
     end
     puts <<-EOS if @verbose
 create zip...done
@@ -159,7 +216,13 @@ zip file at \"#{@zip}\"
   end
 
   class << self
-    alias make new
+    def make opt
+      new(opt).make
+    end
+
+    def zip opt
+      new(opt).zip
+    end
   end
 end
 

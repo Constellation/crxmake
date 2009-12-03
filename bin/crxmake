@@ -16,6 +16,11 @@ option not valid
   optional opt
    --extension-output=<extension output path>
      crx output path (default: ./<extension dirname>.crx)
+   --zip-output=<zip output path>
+     zip output path (default: ./<extension dirname>.zip)
+     if it isn't defined, crxmake is working on crx mode.
+   --mode=<zip or crx>
+     if it is defined, this value mode is priority.
    --pack-extension-key=<pem path>
      pem key path
    --key-output=<key path>
@@ -43,6 +48,16 @@ OptionParser.new('Packaging Chromium Extension') do |opt|
   opt.on('--extension-output CRX') do |crx|
     data[:crx_output] = crx
   end
+  opt.on('--zip-output ZIP') do |zip|
+    data[:zip_output] = zip
+  end
+  opt.on('--mode CORZ') do |corz|
+    if corz == 'zip'
+      data[:zip_flag] = true
+    elsif corz == 'crx'
+      data[:crx_flag] = true
+    end
+  end
   opt.on('--ignore-file FILE') do |file|
     data[:ignorefile] = Regexp.new file
   end
@@ -60,7 +75,17 @@ OptionParser.new('Packaging Chromium Extension') do |opt|
 end
 
 begin
-  CrxMake.make(data)
+  if data[:crx_flag]
+    CrxMake.make data
+  elsif data[:zip_flag]
+    CrxMake.zip data
+  else
+    if data[:zip_output]
+      CrxMake.zip data
+    else
+      CrxMake.make data
+    end
+  end
 rescue => e
   puts e.message
   puts usage
