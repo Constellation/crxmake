@@ -9,6 +9,7 @@ make chromium extensions
 == SYNOPSIS:
 ruby code
   require 'crxmake'
+  # create crx
   CrxMake.make(
     :ex_dir => "./src",
     :pkey   => "./test.pem",
@@ -18,16 +19,31 @@ ruby code
     :ignoredir => /\.(?:svn|git|cvs)/
   )
 
+  # create zip for Google Extension Gallery
+  CrxMake.make(
+    :ex_dir => "./src",
+    :pkey   => "./test.pem",
+    :zip_output => "./package/test.zip",
+    :verbose => true,
+    :ignorefile => /\.swp/,
+    :ignoredir => /\.(?:svn|git|cvs)/
+  )
+
 command line
   $ crxmake --pack-extension=<extension dir> --extension-output=<extension output path> --pack-extension-key=<pem path>
+
 
   required opt
    --pack-extension=<extension dir>
      extension source directory
-  
   optional opt
    --extension-output=<extension output path>
      crx output path (default: ./<extension dirname>.crx)
+   --zip-output=<zip output path>
+     zip output path (default: ./<extension dirname>.zip)
+     if it isn't defined, crxmake is working on crx mode.
+   --mode=<zip or crx>
+     if it is defined, this value mode is priority.
    --pack-extension-key=<pem path>
      pem key path
    --key-output=<key path>
@@ -39,6 +55,9 @@ command line
   --ignore-dir=<pattern>
     pattern to ignore directories
     pattern is compiled by Regexp.new(<pattern>)
+  required opt
+   --pack-extension=<extension dir>
+     extension source directory
 
 == REQUIREMENTS:
 
