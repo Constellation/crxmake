@@ -9,8 +9,10 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '2.0.1'
-  @@magic = [?C, ?r, ?2, ?4].pack('C*')
+  VERSION = '2.0.2'
+  # thx masover
+  @@magic = 'Cr24'
+
   # this is chromium extension version
   @@version = [2].pack('L')
 

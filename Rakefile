@@ -75,13 +75,28 @@ task :gemspec do
   end
 end
 
-desc "gem install"
-task :install => [:gem] do
-  sh "sudo gem install pkg/#{$name}-#{$version}.gem --local"
+namespace :install do
+  desc "install 1.8"
+  task "1.8" => [:gem] do
+    sh "sudo gem1.8 install pkg/#{$name}-#{$version}.gem --local"
+  end
+
+  desc "install 1.9"
+  task "1.9" => [:gem] do
+    sh "sudo gem1.9 install pkg/#{$name}-#{$version}.gem --local"
+  end
 end
 
-desc "gem uninstall"
-task :uninstall do
-  sh "sudo gem uninstall #{$name}"
+namespace :uninstall do
+  desc "uninstall 1.8"
+  task "1.8" do
+    sh "sudo gem1.8 uninstall #{$name}"
+  end
+
+  desc "uninstall 1.9"
+  task "1.9" do
+    sh "sudo gem1.9 uninstall #{$name}"
+  end
 end
+
 # vim: syntax=ruby
