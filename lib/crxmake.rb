@@ -11,14 +11,14 @@ require 'pathname'
 class CrxMake < Object
   VERSION = '2.0.2'
   # thx masover
-  @@magic = 'Cr24'
+  MAGIC = 'Cr24'
 
   # this is chromium extension version
-  @@version = [2].pack('L')
+  EXT_VERSION = [2].pack('L')
 
   # CERT_PUBLIC_KEY_INFO struct
-  @@key_algo = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00).map{|s| s.hex}.pack('C*')
-  @@key_size = 1024
+  KEY = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00).map{|s| s.hex}.pack('C*')
+  KEY_SIZE = 1024
 
   def initialize opt
     @opt = opt
@@ -141,7 +141,7 @@ ext dir: \"#{@exdir}\"
 
   def generate_key
     puts "generate pemkey to  \"#{@pkey_o}\"" if @verbose
-    @key = OpenSSL::PKey::RSA.generate(@@key_size)
+    @key = OpenSSL::PKey::RSA.generate(KEY_SIZE)
     # save key
     File.open(@pkey_o, 'wb') do |file|
       file << @key.export()
@@ -194,10 +194,10 @@ zip file at \"#{@zip}\"
 
   def write_crx
     print "write crx..." if @verbose
-    key = @@key_algo+@key.public_key.to_der
+    key = KEY+@key.public_key.to_der
     File.open(@crx, 'wb') do |file|
-      file << @@magic
-      file << @@version
+      file << MAGIC
+      file << EXT_VERSION
       file << to_sizet(key.size)
       file << to_sizet(@sig.size)
       file << key
