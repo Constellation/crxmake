@@ -77,35 +77,35 @@ end
 
 desc "install"
 task "install" => [:gem] do
-  sh "sudo gem install pkg/#{$name}-#{$version}.gem --local"
+  sh "gem install pkg/#{$name}-#{$version}.gem --local"
 end
 
 namespace :install do
   desc "install 1.8"
   task "1.8" => [:gem] do
-    sh "sudo gem1.8 install pkg/#{$name}-#{$version}.gem --local"
+    sh "gem1.8 install pkg/#{$name}-#{$version}.gem --local"
   end
 
   desc "install 1.9"
   task "1.9" => [:gem] do
-    sh "sudo gem1.9 install pkg/#{$name}-#{$version}.gem --local"
+    sh "gem1.9 install pkg/#{$name}-#{$version}.gem --local"
   end
 end
 
 desc "uninstall"
 task "uninstall" do
-  sh "sudo gem uninstall #{$name}"
+  sh "gem uninstall #{$name}"
 end
 
 namespace :uninstall do
   desc "uninstall 1.8"
   task "1.8" do
-    sh "sudo gem1.8 uninstall #{$name}"
+    sh "gem1.8 uninstall #{$name}"
   end
 
   desc "uninstall 1.9"
   task "1.9" do
-    sh "sudo gem1.9 uninstall #{$name}"
+    sh "gem1.9 uninstall #{$name}"
   end
 end
 

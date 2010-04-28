@@ -9,12 +9,12 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '2.0.2'
+  VERSION = '2.0.3'
   # thx masover
   MAGIC = 'Cr24'
 
   # this is chromium extension version
-  EXT_VERSION = [2].pack('L')
+  EXT_VERSION = [2].pack('V')
 
   # CERT_PUBLIC_KEY_INFO struct
   KEY = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00).map{|s| s.hex}.pack('C*')
@@ -210,7 +210,7 @@ zip file at \"#{@zip}\"
   end
 
   def to_sizet num
-    return [num].pack('L')
+    return [num].pack('V')
   end
 
   def final
