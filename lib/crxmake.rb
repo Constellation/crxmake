@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 # vim: fileencoding=utf-8
 require 'rubygems'
-require 'zipruby'
+require 'zip'
 require 'openssl'
 require 'digest/sha1'
 require 'fileutils'
@@ -9,7 +9,7 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '2.0.3'
+  VERSION = '2.0.4'
   # thx masover
   MAGIC = 'Cr24'
 
@@ -150,7 +150,7 @@ ext dir: \"#{@exdir}\"
 
   def create_zip
     puts "create zip" if @verbose
-    Zip::Archive.open(@zip, Zip::CREATE | Zip::TRUNC) do |zip|
+    Zip::ZipFile.open(@zip, Zip::ZipFile::CREATE) do |zip|
       Find.find(@exdir) do |path|
         unless path == @exdir
           if File.directory?(path)
@@ -159,14 +159,14 @@ ext dir: \"#{@exdir}\"
               Find.prune
             else
               puts "include dir: \"#{path}\"" if @verbose
-              zip.add_dir(get_relative(@exdir, path))
+              zip.add(get_relative(@exdir, path))
             end
           else
             if @ignorefile && File.basename(path) =~ @ignorefile
               puts "ignore file: \"#{path}\"" if @verbose
             else
               puts "include file: \"#{path}\"" if @verbose
-              zip.add_file(get_relative(@exdir, path), path)
+              zip.add(get_relative(@exdir, path), path)
             end
           end
         end
