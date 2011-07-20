@@ -46,7 +46,7 @@ class CrxMake < Object
     end
     create_zip do |zip|
       puts "include pem key: \"#{@pkey}\"" if @verbose
-      zip.add_file('key.pem', @pkey)
+      zip.add('key.pem', @pkey)
     end
   end
 

@@ -7,7 +7,7 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rake/contrib/sshpublisher'
-require 'lib/crxmake'
+require './lib/crxmake'
 
 $version = CrxMake::VERSION
 $readme = 'README.rdoc'
