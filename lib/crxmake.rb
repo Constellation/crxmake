@@ -9,7 +9,7 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '2.0.4'
+  VERSION = '2.0.5'
   # thx masover
   MAGIC = 'Cr24'
 
@@ -159,7 +159,7 @@ ext dir: \"#{@exdir}\"
               Find.prune
             else
               puts "include dir: \"#{path}\"" if @verbose
-              zip.add(get_relative(@exdir, path))
+              zip.add(get_relative(@exdir, path), path)
             end
           else
             if @ignorefile && File.basename(path) =~ @ignorefile
