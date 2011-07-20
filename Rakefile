@@ -48,7 +48,7 @@ spec = Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.test_files = Dir["test/*_test.rb"]
   {
-    "zipruby" => ">=0.3.2",
+    "zip" => "~> 2.0.2",
 #    "openssl" => ">=1.0.0"
   }.each do |dep, ver|
     s.add_dependency(dep, ver)
