@@ -46,7 +46,6 @@ class CrxMakeTest < Test::Unit::TestCase
     assert(File.exist?(File.join(@dir, 'test_zip.pem')))
   end
   def test_create_crx_command
-    puts `pwd`
     system("ruby #{@command} --pack-extension='#{File.join(@dir, 'src')}' --extension-output='#{File.join(@dir, 'test_crx.crx')}' --key-output='#{File.join(@dir, 'test_crx.pem')}' --verbose")
     assert(File.exist?(File.join(@dir, 'test_crx.crx')))
     assert(File.exist?(File.join(@dir, 'test_crx.pem')))
