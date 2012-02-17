@@ -194,7 +194,8 @@ zip file at \"#{@zip}\"
 
   def write_crx
     print "write crx..." if @verbose
-    key = KEY+@key.public_key.to_der
+    key = @key.public_key.to_der
+    key.index(KEY) != 0 and key = KEY + key
     File.open(@crx, 'wb') do |file|
       file << MAGIC
       file << EXT_VERSION
