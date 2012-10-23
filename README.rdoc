@@ -6,8 +6,6 @@
 
 make chromium extensions
 
-** Using 'zip' gem instead of 'zipruby' to support RubyInstaller for Windows.
-
 == SYNOPSIS:
 ruby code
   require 'crxmake'
@@ -64,7 +62,7 @@ command line
 == REQUIREMENTS:
 
 * openssl
-* zip
+* rubyzip
 
 == INSTALL:
 

@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 # vim: fileencoding=utf-8
 require 'rubygems'
-require 'zip'
+require 'zip/zip'
 require 'openssl'
 require 'digest/sha1'
 require 'fileutils'

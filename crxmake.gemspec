@@ -21,15 +21,5 @@ Gem::Specification.new do |s|
   s.summary = %q{make chromium extension}
   s.test_files = ["test/crxmake_test.rb"]
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<zip>, ["~> 2.0.2"])
-    else
-      s.add_dependency(%q<zip>, ["~> 2.0.2"])
-    end
-  else
-    s.add_dependency(%q<zip>, ["~> 2.0.2"])
-  end
+  s.add_runtime_dependency "rubyzip"
 end
