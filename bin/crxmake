@@ -2,7 +2,12 @@
 # vim: fileencoding=utf-8
 require 'rubygems'
 require 'optparse'
-require 'crxmake'
+begin
+  require 'crxmake'
+rescue LoadError
+  # require_relative is 1.9 only
+  require File.expand_path("../../lib/crxmake", __FILE__)
+end
 
 data = {}
 usage = <<-EOS
