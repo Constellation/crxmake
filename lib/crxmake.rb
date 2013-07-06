@@ -35,7 +35,7 @@ class CrxMake < Object
     sign_zip
     write_crx
   ensure
-    final
+    remove_zip
   end
 
   def zip
@@ -44,6 +44,7 @@ class CrxMake < Object
       generate_key
       @pkey = @pkey_o
     end
+    remove_zip
     create_zip do |zip|
       puts "include pem key: \"#{@pkey}\"" if @verbose
       zip.add('key.pem', @pkey)
@@ -214,7 +215,7 @@ zip file at \"#{@zip}\"
     return [num].pack('V')
   end
 
-  def final
+  def remove_zip
     FileUtils.rm_rf(@zip) if @zip && File.exist?(@zip)
   end
 
