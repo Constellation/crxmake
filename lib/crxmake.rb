@@ -136,7 +136,7 @@ ext dir: \"#{@exdir}\"
   def read_key
     puts "read pemkey: \"#{@pkey}\"" if @verbose
     File.open(@pkey, 'rb') do |io|
-      @key = OpenSSL::PKey::RSA.new(io)
+      @key = OpenSSL::PKey::RSA.new(io.read)
     end
   end
 
