@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.rdoc"]
   s.files = ["README.rdoc", "Rakefile", "bin/crxmake", "test/crxmake_test.rb", "lib/crxmake.rb"]
   s.homepage = "http://github.com/Constellation/crxmake/tree/master"
+  s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.rdoc", "--charset", "utf-8", "--line-numbers", "--inline-source"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "crxmake"

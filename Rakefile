@@ -46,6 +46,7 @@ spec = Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.require_path = 'lib'
   s.test_files = Dir["test/*_test.rb"]
+  s.license = 'MIT'
   {
     "zip" => "~> 2.0.2",
 #    "openssl" => ">=1.0.0"
