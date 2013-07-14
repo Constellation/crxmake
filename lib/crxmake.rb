@@ -9,7 +9,7 @@ require 'find'
 require 'pathname'
 
 class CrxMake < Object
-  VERSION = '2.1.1'
+  VERSION = '2.1.2'
   # thx masover
   MAGIC = 'Cr24'
 
