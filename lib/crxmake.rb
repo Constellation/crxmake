@@ -40,11 +40,11 @@ class CrxMake < Object
     else
       generate_key
     end
-    create_zip
-    sign_zip
-    write_crx
+    zip_buffer = create_zip
+    sign_zip(zip_buffer)
+    write_crx(zip_buffer)
   ensure
-    remove_zip
+    #remove_zip
   end
 
   def zip
@@ -53,11 +53,12 @@ class CrxMake < Object
       generate_key
       @pkey = @pkey_o
     end
-    remove_zip
-    create_zip do |zip|
+    #remove_zip
+    zip_buffer = create_zip do |zip|
       puts "include pem key: \"#{@pkey}\"" if @verbose
       zip.add('key.pem', @pkey)
     end
+    File.open(@zip,'wb'){|f|f<<zip_buffer}
   end
 
   private
@@ -164,7 +165,7 @@ ext dir: \"#{@exdir}\"
 
   def create_zip
     puts "create zip" if @verbose
-    Zip::ZipFile.open(@zip, Zip::ZipFile::CREATE) do |zip|
+    buffer = Zip::ZipFile.add_buffer do |zip|
       Find.find(@exdir) do |path|
         unless path == @exdir
           if File.directory?(path)
@@ -191,22 +192,24 @@ ext dir: \"#{@exdir}\"
 create zip...done
 zip file at \"#{@zip}\"
     EOS
+    return buffer.string
   end
 
   def get_relative base, target
     Pathname.new(target.to_s).relative_path_from(Pathname.new(base.to_s)).to_s
   end
 
-  def sign_zip
+  def sign_zip(zip_buffer)
     puts "sign zip" if @verbose
     plain = nil
-    File.open(@zip, 'rb') do |file|
-      plain = file.read
-    end
+    #File.open(@zip, 'rb') do |file|
+    #  plain = file.read
+    #end
+    plain = zip_buffer
     @sig = @key.sign(OpenSSL::Digest::SHA1.new, plain)
   end
 
-  def write_crx
+  def write_crx(zip_buffer)
     print "write crx..." if @verbose
     key = @key.public_key.to_der
     key.index(KEY) != 0 and key = KEY + key
@@ -217,9 +220,10 @@ zip file at \"#{@zip}\"
       file << to_sizet(@sig.size)
       file << key
       file << @sig
-      File.open(@zip, 'rb') do |zip|
-        file << zip.read
-      end
+      #File.open(@zip, 'rb') do |zip|
+      #  file << zip.read
+      #end
+      file << zip_buffer
     end
     puts "done at \"#{@crx}\"" if @verbose
   end
@@ -228,9 +232,9 @@ zip file at \"#{@zip}\"
     return [num].pack('V')
   end
 
-  def remove_zip
-    FileUtils.rm_rf(@zip) if @zip && File.exist?(@zip)
-  end
+  #def remove_zip
+  #  FileUtils.rm_rf(@zip) if @zip && File.exist?(@zip)
+  #end
 
   class << self
     def make opt
