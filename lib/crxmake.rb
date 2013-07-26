@@ -150,7 +150,7 @@ ext dir: \"#{@exdir}\"
   end
 
   def generate_key
-    if defined?($pkcs8_warning)
+    if defined?($pkcs8_warning)&&@verbose
       $stderr.puts 'Warn: generated pem must be converted into PKCS8 in order to upload to Chrome WebStore.'
       $stderr.puts 'To suppress this message, do: gem install openssl_pkcs8'
     end
