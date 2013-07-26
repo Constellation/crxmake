@@ -8,6 +8,15 @@ require 'fileutils'
 require 'find'
 require 'pathname'
 
+begin
+	require 'openssl_pkcs8'
+	class OpenSSL::PKey::RSA
+		alias_method :to_pem, :to_pem_pkcs8
+	end
+rescue LoadError
+	$pkcs8_warning=1
+end
+
 class CrxMake < Object
   VERSION = '2.1.2'
   # thx masover
@@ -141,11 +150,15 @@ ext dir: \"#{@exdir}\"
   end
 
   def generate_key
+    if defined?($pkcs8_warning)
+      $stderr.puts 'Warn: generated pem must be converted into PKCS8 in order to upload to Chrome WebStore.'
+      $stderr.puts 'To suppress this message, do: gem install openssl_pkcs8'
+    end
     puts "generate pemkey to  \"#{@pkey_o}\"" if @verbose
     @key = OpenSSL::PKey::RSA.generate(KEY_SIZE)
     # save key
     File.open(@pkey_o, 'wb') do |file|
-      file << @key.export()
+      file << @key.to_pem
     end
   end
 
