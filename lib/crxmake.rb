@@ -18,7 +18,7 @@ rescue LoadError
 end
 
 class CrxMake < Object
-  VERSION = '2.1.3'
+  VERSION = '2.2.0'
   # thx masover
   MAGIC = 'Cr24'
 
