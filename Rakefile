@@ -48,7 +48,7 @@ spec = Gem::Specification.new do |s|
   s.test_files = Dir["test/*_test.rb"]
   s.license = 'MIT'
   {
-    "zip" => "~> 2.0.2",
+    "rubyzip" => "~> 1.1.0",
 #    "openssl" => ">=1.0.0"
   }.each do |dep, ver|
     s.add_dependency(dep, ver)
