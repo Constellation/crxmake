@@ -25,8 +25,6 @@ class CrxMake < Object
   # this is chromium extension version
   EXT_VERSION = [2].pack('V')
 
-  # CERT_PUBLIC_KEY_INFO struct
-  KEY = %w(30 81 9F 30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 03 81 8D 00).map{|s| s.hex}.pack('C*')
   KEY_SIZE = 1024
 
   def initialize opt
@@ -212,7 +210,6 @@ zip file at \"#{@zip}\"
   def write_crx(zip_buffer)
     print "write crx..." if @verbose
     key = @key.public_key.to_der
-    key.index(KEY) != 0 and key = KEY + key
     File.open(@crx, 'wb') do |file|
       file << MAGIC
       file << EXT_VERSION
