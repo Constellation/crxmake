@@ -14,7 +14,14 @@ begin
 		alias_method :to_pem, :to_pem_pkcs8
 	end
 rescue LoadError
-	$pkcs8_warning=1
+	begin
+		require 'openssl_pkcs8_pure'
+		class OpenSSL::PKey::RSA
+			alias_method :to_pem, :to_pem_pkcs8
+		end
+	rescue LoadError
+		$pkcs8_warning=1
+	end
 end
 
 class CrxMake < Object
@@ -153,7 +160,7 @@ ext dir: \"#{@exdir}\"
   def generate_key
     if defined?($pkcs8_warning)&&@verbose
       $stderr.puts 'Warn: generated pem must be converted into PKCS8 in order to upload to Chrome WebStore.'
-      $stderr.puts 'To suppress this message, do: gem install openssl_pkcs8'
+      $stderr.puts 'To suppress this message, do: gem install openssl_pkcs8_pure'
     end
     puts "generate pemkey to  \"#{@pkey_o}\"" if @verbose
     @key = OpenSSL::PKey::RSA.generate(KEY_SIZE)
